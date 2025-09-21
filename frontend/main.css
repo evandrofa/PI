@@ -1,0 +1,396 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    color: #333;
+    background-color: #f5f5f5;
+}
+
+h1, h2, h3 {
+    color: #2e8b57;
+    text-align: center;
+}
+
+a {
+    text-decoration: none;
+    color: #2e8b57;
+}
+
+header {
+    background-color: #fff;
+    padding: 1rem 2rem;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header h1 {
+    margin: 0;
+}
+
+nav a {
+    margin-left: 1.5rem;
+    font-weight: bold;
+}
+
+nav a:nth-child(4) {
+  background-color: #28a745;
+  color: white; 
+  padding: 10px 20px; 
+  border: none; 
+  border-radius: 6px; 
+  text-decoration: none; 
+  font-weight: bold;
+  display: inline-block;
+  transition: background-color 0.3s ease;
+}
+
+.hero {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    text-align: center;      
+    gap: 2rem;               
+    background-color: #e0f7ef;
+    padding: 3rem 2rem;
+  }
+
+.hero-content {
+    max-width: 500px;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.6s ease-in-out;
+}
+
+.hero img {
+    max-width: 400px;
+    width: 100%;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.6s ease-in-out;
+}
+
+
+.services {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    background-color: #fff;
+    padding: 3rem 2rem;
+    gap: 2rem;
+}
+
+.service {
+    max-width: 250px;
+    text-align: center;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.6s ease-in-out;
+}
+
+.service img {
+    width: 100px;
+    height: 100px;
+    margin: 1rem 0;
+}
+
+
+.team {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center; 
+    align-items: center;     
+    text-align: center;      
+    gap: 2rem;               
+    padding: 3rem 2rem;
+    background-color: #e0f7ef;
+}
+
+.team-text {
+    max-width: 500px;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.6s ease-in-out;
+}
+
+.team img {
+    max-width: 400px;
+    width: 100%;
+    border-radius: 10px;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.6s ease-in-out;
+}
+
+
+footer {
+    background-color: #fff;
+    text-align: center;
+    padding: 1rem;
+    font-size: 0.9rem;
+    box-shadow: 0 -2px 5px rgba(0,0,0,0.05);
+}
+
+
+form {
+    max-width: 500px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+input, textarea, button {
+    padding: 0.75rem;
+    font-size: 1rem;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+button {
+    background-color: #2e8b57;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #276e47;
+}
+
+/* Tabela do Painel (admin.html) */
+table {
+    width: 95%;
+    max-width: 1000px;
+    margin: 2rem auto;
+    border-collapse: collapse;
+    background-color: #fff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+thead {
+    background-color: #2e8b57;
+    color: white;
+}
+
+th, td {
+    padding: 1rem;
+    border: 1px solid #ddd;
+    text-align: center;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+
+.visible {
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+}
+
+
+@media (max-width: 768px) {
+    .hero {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .team {
+        flex-direction: column;
+    }
+
+    nav {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        align-items: flex-end;
+    }
+}
+.form-container {
+    max-width: 500px;
+    margin: 3rem auto;
+    padding: 2rem;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.form-container h2 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    color: #2e8b57;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+input, textarea {
+    padding: 0.75rem;
+    font-size: 1rem;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    width: 100%;
+}
+
+textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+button {
+    padding: 0.75rem;
+    background-color: #2e8b57;
+    color: white;
+    font-size: 1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #276e47;
+}
+
+  /*  página admin */
+  body {
+    background: #f4f7f6;
+    color: #333;
+  }
+
+  h1 {
+    text-align: center;
+    margin: 1.5rem 0;
+    color: #2e8b57;
+  }
+
+  .container {
+    max-width: 1100px;
+    margin: auto;
+    padding: 1rem 2rem 3rem;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  thead {
+    background-color: #2e8b57;
+    color: white;
+  }
+
+  th, td {
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    text-align: center;
+  }
+
+  tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+
+  button.action-btn {
+    background-color: #2e8b57;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 0 3px;
+    font-size: 0.9rem;
+  }
+
+  button.action-btn.cancel {
+    background-color: #c0392b;
+  }
+
+  button.action-btn:hover {
+    opacity: 0.9;
+  }
+
+
+  .modal {
+    display: none; 
+    position: fixed; 
+    z-index: 10; 
+    left: 0;
+    top: 0;
+    width: 100%; 
+    height: 100%; 
+    overflow: auto; 
+    background-color: rgba(0,0,0,0.4); 
+  }
+
+  .modal-content {
+    background-color: #fff;
+    margin: 10% auto; 
+    padding: 20px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 500px;
+  }
+
+  .modal-content h2 {
+    margin-top: 0;
+    color: #2e8b57;
+  }
+
+  .modal-content label {
+    display: block;
+    margin: 12px 0 4px;
+    font-weight: bold;
+  }
+
+  .modal-content input, 
+  .modal-content textarea {
+    width: 100%;
+    padding: 8px;
+    font-size: 1rem;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+  }
+
+  .modal-content textarea {
+    resize: vertical;
+    min-height: 80px;
+  }
+
+  .modal-buttons {
+    margin-top: 15px;
+    text-align: right;
+  }
+
+  .modal-buttons button {
+    padding: 8px 14px;
+    font-size: 1rem;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+  }
+
+  .modal-buttons button.save {
+    background-color: #2e8b57;
+    color: white;
+    margin-right: 8px;
+  }
+
+  .modal-buttons button.cancel {
+    background-color: #aaa;
+    color: white;
+  }
+

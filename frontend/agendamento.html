@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="main.css">
+    <title>Agendamento - VetCare</title>
+</head>
+<body>
+
+    <header>
+        <h1>VetCare</h1>
+        <nav>
+            <a href="index.html">Início</a>
+        </nav>
+    </header>
+
+    <section class="form-container">
+        <h2>Agendar Consulta</h2>
+        <form id="form-agendamento">
+            <input type="text" name="nome" placeholder="Seu nome" required>
+            <input type="tel" name="telefone" placeholder="Telefone" required>
+            <input type="date" name="data" required>
+            <input type="time" name="hora" required>
+            <input type="text" name="animal" placeholder="Nome do animal" required>
+            <textarea name="observacoes" placeholder="Observações (opcional)"></textarea>
+            <button type="submit">Enviar Agendamento</button>
+        </form>
+    </section>
+
+    <footer>
+        © 2025 VetCare - Todos os direitos reservados.
+    </footer>
+
+    <script>
+        document.getElementById('form-agendamento').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const dados = Object.fromEntries(new FormData(e.target).entries());
+
+            // Envia os dados para o backend (ajuste a URL se necessário)
+            const resposta = await fetch('http://localhost:3000/api/agendamentos', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(dados)
+            });
+
+            const resultado = await resposta.json();
+            alert(resultado.message || 'Agendamento enviado com sucesso!');
+            e.target.reset();
+        });
+    </script>
+
+</body>
+</html>

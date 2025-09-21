@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="main.css">
+    <title>VetCare - Clínica Veterinária</title>
+</head>
+<body>
+
+    <header>
+        <h1>VetCare</h1>
+        <nav>
+            <a href="#">Início</a>
+            <a href="#servicos">Serviços</a>
+            <a href="#contato">Contato</a>
+            <a href="admin.html">Painel Admin</a>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h2>Cuidado e amor para o seu pet</h2>
+            <p>Atendimento veterinário de qualidade para cães, gatos e outros animais de estimação.</p>
+            <button onclick="window.location.href='agendamento.html'">Agendar Consulta</button>
+        </div>
+        <img src="src/img/catdog.png" alt="Cachorro e Gato">
+    </section>
+
+
+    <section id="servicos" class="services">
+        <div class="service">
+            <h3>Consultas</h3>
+            <img src="src/img/consulta.png" alt="Consulta">
+            <p>Atendimento completo para seu pet com profissionais qualificados.</p>
+        </div>
+        <div class="service">
+            <h3>Vacinas</h3>
+            <img src="src/img/vacina.png" alt="Vacina">
+            <p>Proteção e prevenção para manter a saúde do seu animal em dia.</p>
+        </div>
+        <div class="service">
+            <h3>Emergências</h3>
+            <img src="src/img/emergencia.png" alt="Emergencia">
+            <p>Suporte rápido em casos urgentes, 24 horas por dia.</p>
+        </div>
+    </section>
+
+    <section class="team">
+        <div class="team-text">
+            <h2>Nossa Equipe</h2>
+            <p>Profissionais experientes e dedicados ao cuidado com o seu animal.</p>
+        </div>
+        <img src="src/img/veterinario.jpg" alt="Veterinário">
+    </section>
+
+    <footer>
+        © 2025 VetCare - Todos os direitos reservados.
+    </footer>
+
+    <script>
+        const elements = document.querySelectorAll('.hero-content, .hero img, .service, .team-text, .team img');
+
+        function checkVisibility() {
+            elements.forEach(el => {
+                const rect = el.getBoundingClientRect();
+                if (rect.top < window.innerHeight - 100) {
+                    el.classList.add('visible');
+                }
+            });
+        }
+
+        window.addEventListener('scroll', checkVisibility);
+        window.addEventListener('load', checkVisibility);
+    </script>
+
+</body>
+</html>
