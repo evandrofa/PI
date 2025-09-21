@@ -9,7 +9,10 @@
 <body>
 
   <h1>Painel do Veterinário</h1>
+
+  <!-- Tabela de Agendamentos -->
   <div class="container">
+    <h2>Agendamentos</h2>
     <table>
       <thead>
         <tr>
@@ -23,12 +26,31 @@
         </tr>
       </thead>
       <tbody id="agendamentos-table-body">
-        <!--   agendamentos inseridos aqui via JS -->
+        <!-- Agendamentos inseridos via JS -->
       </tbody>
     </table>
   </div>
 
-  <!-- Modal de edição -->
+  <!-- Tabela de Animais -->
+  <div class="container">
+    <h2>Animais Cadastrados</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nome</th>
+          <th>Espécie</th>
+          <th>Idade</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody id="animals-table-body">
+        <!-- Animais inseridos via JS -->
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Modal de edição de Agendamento -->
   <div id="modal-editar" class="modal">
     <div class="modal-content">
       <h2>Editar Agendamento</h2>
@@ -61,23 +83,25 @@
   </div>
 
 <script>
-  const apiUrl = 'http://localhost:3000/api/agendamentos';
-  
-  const tabelaCorpo = document.getElementById('agendamentos-table-body');
+  const agendamentosApi = 'http://localhost:3000/api/agendamentos';
+  const animalsApi = 'http://localhost:3000/api/animals';
+
+  const tabelaAgendamentos = document.getElementById('agendamentos-table-body');
+  const tabelaAnimals = document.getElementById('animals-table-body');
+
   const modalEditar = document.getElementById('modal-editar');
   const formEditar = document.getElementById('form-editar');
   const btnCancelarEditar = document.getElementById('btn-cancelar-editar');
 
-  // formatar data ISO para DD/MM/YYYY
+  // Formatar data
   function formatarDataBrasileira(dataISO) {
     const data = new Date(dataISO);
     const dia = String(data.getDate()).padStart(2, '0');
-    const mes = String(data.getMonth() + 1).padStart(2, '0'); // mês começa do 0
+    const mes = String(data.getMonth() + 1).padStart(2, '0');
     const ano = data.getFullYear();
     return `${dia}/${mes}/${ano}`;
   }
 
-  // formatar data para o input type="date" (YYYY-MM-DD)
   function formatarParaInputDate(dataISO) {
     const data = new Date(dataISO);
     const dia = String(data.getDate()).padStart(2, '0');
@@ -86,19 +110,18 @@
     return `${ano}-${mes}-${dia}`;
   }
 
-  
+  // Carregar Agendamentos
   async function carregarAgendamentos() {
     try {
-      const res = await fetch(apiUrl);
+      const res = await fetch(agendamentosApi);
       const agendamentos = await res.json();
-
-      tabelaCorpo.innerHTML = '';
+      tabelaAgendamentos.innerHTML = '';
       agendamentos.forEach(item => {
-        tabelaCorpo.innerHTML += `
+        tabelaAgendamentos.innerHTML += `
           <tr data-id="${item.id}">
             <td>${item.nome}</td>
             <td>${item.telefone}</td>
-            <td>${formatarDataBrasileira(item.data)}</td> <!-- data formatada -->
+            <td>${formatarDataBrasileira(item.data)}</td>
             <td>${item.hora}</td>
             <td>${item.animal}</td>
             <td>${item.observacoes || ''}</td>
@@ -115,41 +138,68 @@
     }
   }
 
-  // modal e preencher formulário para editar
-  async function abrirEditar(id) {
+  // Carregar Animais
+  async function carregarAnimals() {
     try {
-      const res = await fetch(`${apiUrl}/${id}`);
-      const agendamento = await res.json();
-
-      document.getElementById('editar-id').value = agendamento.id;
-      document.getElementById('editar-nome').value = agendamento.nome;
-      document.getElementById('editar-telefone').value = agendamento.telefone;
-      document.getElementById('editar-data').value = formatarParaInputDate(agendamento.data); // formata para input date
-      document.getElementById('editar-hora').value = agendamento.hora;
-      document.getElementById('editar-animal').value = agendamento.animal;
-      document.getElementById('editar-observacoes').value = agendamento.observacoes;
-
-      modalEditar.style.display = 'block';
-    } catch (error) {
-      alert('Erro ao abrir agendamento');
-      console.error(error);
+      const res = await fetch(animalsApi);
+      const animals = await res.json();
+      tabelaAnimals.innerHTML = '';
+      animals.forEach(a => {
+        tabelaAnimals.innerHTML += `
+          <tr data-id="${a.id}">
+            <td>${a.id}</td>
+            <td>${a.name}</td>
+            <td>${a.species}</td>
+            <td>${a.age}</td>
+            <td>
+              <button class="action-btn cancel" onclick="excluirAnimal(${a.id})">Excluir</button>
+            </td>
+          </tr>
+        `;
+      });
+    } catch(err) {
+      console.error('Erro ao carregar animais:', err);
+      alert('Erro ao carregar animais. Verifique o backend.');
     }
   }
 
- 
-  btnCancelarEditar.onclick = () => {
-    modalEditar.style.display = 'none';
-  };
-
-
-  window.onclick = event => {
-    if(event.target === modalEditar) {
-      modalEditar.style.display = 'none';
+  // Excluir Animal
+  async function excluirAnimal(id) {
+    if(!confirm('Deseja realmente excluir este animal?')) return;
+    try {
+      const res = await fetch(`${animalsApi}/${id}`, { method: 'DELETE' });
+      const result = await res.json();
+      alert(result.error || result.message);
+      carregarAnimals();
+    } catch(err) {
+      console.error(err);
+      alert('Erro ao excluir animal');
     }
-  };
+  }
 
+  // Modal Editar Agendamento
+  async function abrirEditar(id) {
+    try {
+      const res = await fetch(`${agendamentosApi}/${id}`);
+      const agendamento = await res.json();
+      document.getElementById('editar-id').value = agendamento.id;
+      document.getElementById('editar-nome').value = agendamento.nome;
+      document.getElementById('editar-telefone').value = agendamento.telefone;
+      document.getElementById('editar-data').value = formatarParaInputDate(agendamento.data);
+      document.getElementById('editar-hora').value = agendamento.hora;
+      document.getElementById('editar-animal').value = agendamento.animal;
+      document.getElementById('editar-observacoes').value = agendamento.observacoes;
+      modalEditar.style.display = 'block';
+    } catch(err) {
+      alert('Erro ao abrir agendamento');
+      console.error(err);
+    }
+  }
 
-  formEditar.onsubmit = async (e) => {
+  btnCancelarEditar.onclick = () => modalEditar.style.display = 'none';
+  window.onclick = event => { if(event.target === modalEditar) modalEditar.style.display = 'none'; };
+
+  formEditar.onsubmit = async e => {
     e.preventDefault();
     const id = document.getElementById('editar-id').value;
     const dados = {
@@ -158,49 +208,42 @@
       data: document.getElementById('editar-data').value,
       hora: document.getElementById('editar-hora').value,
       animal: document.getElementById('editar-animal').value,
-      observacoes: document.getElementById('editar-observacoes').value,
+      observacoes: document.getElementById('editar-observacoes').value
     };
-
     try {
-      const res = await fetch(`${apiUrl}/${id}`, {
+      const res = await fetch(`${agendamentosApi}/${id}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(dados),
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify(dados)
       });
-      if (res.ok) {
+      if(res.ok){
         alert('Agendamento atualizado com sucesso!');
         modalEditar.style.display = 'none';
         carregarAgendamentos();
-      } else {
-        alert('Erro ao atualizar agendamento');
-      }
-    } catch (error) {
+      } else alert('Erro ao atualizar agendamento');
+    } catch(err){
       alert('Erro na requisição');
-      console.error(error);
+      console.error(err);
     }
   };
 
-
   async function cancelarAgendamento(id) {
-    if (!confirm('Tem certeza que deseja cancelar este agendamento?')) return;
-
+    if(!confirm('Tem certeza que deseja cancelar este agendamento?')) return;
     try {
-      const res = await fetch(`${apiUrl}/${id}`, {
-        method: 'DELETE'
-      });
-      if (res.ok) {
+      const res = await fetch(`${agendamentosApi}/${id}`, { method: 'DELETE' });
+      if(res.ok){
         alert('Agendamento cancelado!');
         carregarAgendamentos();
-      } else {
-        alert('Erro ao cancelar agendamento');
-      }
-    } catch (error) {
+      } else alert('Erro ao cancelar agendamento');
+    } catch(err){
       alert('Erro na requisição');
-      console.error(error);
+      console.error(err);
     }
   }
 
+  // Carregar tudo ao abrir
   carregarAgendamentos();
+  carregarAnimals();
 </script>
 </body>
 </html>

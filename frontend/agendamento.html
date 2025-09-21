@@ -3,86 +3,83 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Agendamento de Consultas</title>
+  <title>Agendar Consulta - VetCare</title>
   <link rel="stylesheet" href="main.css">
 </head>
 <body>
 
-  <!-- Header -->
-  <header>
-    <h1>Agendamento de Consultas</h1>
-    <nav>
-      <a href="index.html">Home</a>
-      <a href="animais.html">Cadastrar Animais</a>
-      <a href="agendamento.html">Agendar Consulta</a>
-    </nav>
-  </header>
+<header>
+  <h1>Agendar Consulta</h1>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="animais.html">Cadastrar Animais</a>
+    <a href="agendamento.html">Agendar Consulta</a>
+  </nav>
+</header>
 
-  <!-- Formulário de agendamento -->
-  <div class="form-container">
-    <h2>Novo Agendamento</h2>
-    <form id="agendamentoForm">
-      <input type="text" name="nome" placeholder="Nome do Cliente" required>
-      <input type="text" name="telefone" placeholder="Telefone" required>
-      <input type="date" name="data" required>
-      <input type="time" name="hora" required>
+<div class="form-container">
+  <h2>Novo Agendamento</h2>
+  <form id="agendamentoForm">
+    <input type="text" name="nome" placeholder="Nome do Cliente" required>
+    <input type="tel" name="telefone" placeholder="Telefone" required>
+    <input type="date" name="data" required>
+    <input type="time" name="hora" required>
+    
+    <!-- Dropdown de animais -->
+    <select name="animalId" id="animalSelect" required>
+      <option value="">Selecione um animal</option>
+    </select>
 
-      <select name="animalId" id="animalSelect" required>
-        <option value="">Selecione um animal</option>
-      </select>
+    <textarea name="observacoes" placeholder="Observações"></textarea>
+    <button type="submit">Agendar Consulta</button>
+  </form>
+</div>
 
-      <textarea name="observacoes" placeholder="Observações"></textarea>
-      <button type="submit">Agendar Consulta</button>
-    </form>
-  </div>
+<script>
+const form = document.getElementById('agendamentoForm');
+const animalSelect = document.getElementById('animalSelect');
 
-  <script>
-    // Carregar animais do banco
-    async function loadAnimals() {
-      try {
-        const res = await fetch('http://localhost:3000/api/animals');
-        const animals = await res.json();
-
-        const select = document.getElementById('animalSelect');
-        select.innerHTML = '<option value="">Selecione um animal</option>';
-
-        animals.forEach(a => {
-          const option = document.createElement('option');
-          option.value = a.id; // ID do animal
-          option.textContent = `${a.name} (${a.species})`;
-          select.appendChild(option);
-        });
-      } catch(err) {
-        console.error('Erro ao carregar animais:', err);
-        alert('Não foi possível carregar os animais. Verifique o backend.');
-      }
-    }
-
-    loadAnimals();
-
-    // Submissão do formulário
-    const form = document.getElementById('agendamentoForm');
-    form.addEventListener('submit', async e => {
-      e.preventDefault();
-      const data = Object.fromEntries(new FormData(form));
-
-      try {
-        const res = await fetch('http://localhost:3000/api/agendamentos', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data)
-        });
-
-        const result = await res.json();
-        alert(result.error || result.message);
-        form.reset();
-        loadAnimals(); 
-      } catch(err) {
-        console.error(err);
-        alert('Erro ao criar agendamento');
-      }
+// Carregar animais do backend e preencher o dropdown
+async function carregarAnimais() {
+  try {
+    const res = await fetch('http://localhost:3000/api/animals');
+    const animals = await res.json();
+    animalSelect.innerHTML = '<option value="">Selecione um animal</option>'; // reset
+    animals.forEach(a => {
+      const option = document.createElement('option');
+      option.value = a.id;
+      option.textContent = `${a.name} (${a.species})`;
+      animalSelect.appendChild(option);
     });
-  </script>
+  } catch (err) {
+    console.error('Erro ao carregar animais:', err);
+    alert('Não foi possível carregar os animais. Verifique o backend.');
+  }
+}
+
+// Inicializar lista de animais ao carregar a página
+carregarAnimais();
+
+// Enviar agendamento
+form.addEventListener('submit', async e => {
+  e.preventDefault();
+  const data = Object.fromEntries(new FormData(form));
+  try {
+    const res = await fetch('http://localhost:3000/api/agendamentos', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+    const result = await res.json();
+    alert(result.error || result.message);
+    form.reset();
+    carregarAnimais(); // atualiza dropdown
+  } catch(err) {
+    console.error(err);
+    alert('Erro ao criar agendamento');
+  }
+});
+</script>
 
 </body>
 </html>
