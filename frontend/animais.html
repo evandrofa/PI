@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cadastro de Animais</title>
+  <link rel="stylesheet" href="main.css">
+</head>
+<body>
+
+  <header>
+    <h1>Cadastro de Animais</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="animais.html">Cadastrar Animais</a>
+      <a href="agendamento.html">Agendar Consulta</a>
+    </nav>
+  </header>
+
+  <div class="form-container">
+    <h2>Novo Animal</h2>
+    <form id="animalForm">
+      <input type="text" name="name" placeholder="Nome do Animal" required>
+      <input type="text" name="species" placeholder="Espécie" required>
+      <input type="number" name="age" placeholder="Idade" min="0" required>
+      <button type="submit">Cadastrar Animal</button>
+    </form>
+  </div>
+
+  <div class="container">
+    <h2>Animais Cadastrados</h2>
+    <table id="animalsTable">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nome</th>
+          <th>Espécie</th>
+          <th>Idade</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Conteúdo será preenchido via JS -->
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    const form = document.getElementById('animalForm');
+    const tableBody = document.querySelector('#animalsTable tbody');
+
+    // Função para carregar animais
+    async function loadAnimals() {
+      try {
+        const res = await fetch('http://localhost:3000/api/animals');
+        const animals = await res.json();
+        tableBody.innerHTML = '';
+        animals.forEach(a => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${a.id}</td>
+            <td>${a.name}</td>
+            <td>${a.species}</td>
+            <td>${a.age}</td>
+            <td>
+              <button class="action-btn" onclick="deleteAnimal(${a.id})">Excluir</button>
+            </td>
+          `;
+          tableBody.appendChild(tr);
+        });
+      } catch(err) {
+        console.error('Erro ao carregar animais:', err);
+      }
+    }
+
+    loadAnimals();
+
+    // Cadastrar animal
+    form.addEventListener('submit', async e => {
+      e.preventDefault();
+      const data = Object.fromEntries(new FormData(form));
+      try {
+        const res = await fetch('http://localhost:3000/api/animals', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+        const result = await res.json();
+        alert(result.error || result.message);
+        form.reset();
+        loadAnimals();
+      } catch(err) {
+        console.error(err);
+        alert('Erro ao cadastrar animal');
+      }
+    });
+
+    // Excluir animal
+    async function deleteAnimal(id) {
+      if(!confirm('Deseja realmente excluir este animal?')) return;
+      try {
+        const res = await fetch(`http://localhost:3000/api/animals/${id}`, {
+          method: 'DELETE'
+        });
+        const result = await res.json();
+        alert(result.error || result.message);
+        loadAnimals();
+      } catch(err) {
+        console.error(err);
+        alert('Erro ao excluir animal');
+      }
+    }
+  </script>
+
+</body>
+</html>
