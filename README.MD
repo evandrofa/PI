@@ -13,7 +13,6 @@ Sistema simples para gerenciar agendamentos e cadastro de animais.
 
    ```bash
    git clone https://github.com/evandrofa/PI.git
-   cd backend
    ```
 
 2. Instale as dependências:
@@ -52,7 +51,6 @@ Sistema simples para gerenciar agendamentos e cadastro de animais.
 5. Inicie o servidor:
 
    ```bash
-   cd backend
    node server.js
    ```
 
