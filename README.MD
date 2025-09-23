@@ -13,7 +13,7 @@ Sistema simples de gerenciamento de agendamentos e cadastro de animais.
 ---
 
 ## 📂 Estrutura do Projeto
-backend/
+--**backend/
 ├─ routes/
 │ ├─ agendamentos.js
 │ └─ animals.js
@@ -39,7 +39,6 @@ backend/
 
 1. Clone o repositório:
 
-```bash
 git clone https://github.com/evandrofa/PI.git
 
 2. Acesse a pasta do backend:
