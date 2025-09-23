@@ -51,6 +51,7 @@ Sistema simples para gerenciar agendamentos e cadastro de animais.
 5. Inicie o servidor:
 
    ```bash
+   cd backend
    node server.js
    ```
 
