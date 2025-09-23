@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const db = require('../db');
 
-// Listar todos os agendamentos com info do animal
 router.get('/', (req, res) => {
   const query = `
     SELECT a.id, a.nome, a.telefone, a.data, a.hora, a.observacoes,
@@ -17,7 +16,7 @@ router.get('/', (req, res) => {
   });
 });
 
-// 🔹 Histórico de agendamentos por animal (deve vir antes de "/:id")
+
 router.get('/animal/:animalId', (req, res) => {
   const { animalId } = req.params;
   const query = `
@@ -32,7 +31,7 @@ router.get('/animal/:animalId', (req, res) => {
   });
 });
 
-// Buscar agendamento por ID
+
 router.get('/:id', (req, res) => {
   const { id } = req.params;
   const query = `
@@ -49,7 +48,7 @@ router.get('/:id', (req, res) => {
   });
 });
 
-// Criar novo agendamento
+
 router.post('/', (req, res) => {
   const { nome, telefone, data, hora, animalId, observacoes } = req.body;
   if (!nome || !data || !hora || !animalId) {
@@ -69,7 +68,7 @@ router.post('/', (req, res) => {
   });
 });
 
-// Atualizar agendamento
+
 router.put('/:id', (req, res) => {
   const { id } = req.params;
   const { nome, telefone, data, hora, animalId, observacoes } = req.body;
@@ -88,7 +87,7 @@ router.put('/:id', (req, res) => {
   });
 });
 
-// Excluir agendamento
+
 router.delete('/:id', (req, res) => {
   const { id } = req.params;
   const query = 'DELETE FROM agendamentos WHERE id = ?';
