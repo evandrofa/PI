@@ -13,7 +13,7 @@ Sistema simples de gerenciamento de agendamentos e cadastro de animais.
 ---
 
 ## 📂 Estrutura do Projeto
---**backend/
+backend/
 ├─ routes/
 │ ├─ agendamentos.js
 │ └─ animals.js

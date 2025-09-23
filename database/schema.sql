@@ -9,7 +9,7 @@ CREATE TABLE animals (
   age INT NOT NULL
 ) ENGINE=InnoDB;
 
--- Tabela de agendamentos
+
 CREATE TABLE agendamentos (
   id INT AUTO_INCREMENT PRIMARY KEY,
   nome VARCHAR(100) NOT NULL,
