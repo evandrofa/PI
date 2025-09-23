@@ -1,96 +1,70 @@
 # 🐾 VetCare - Painel Veterinário
 
-Sistema simples de gerenciamento de agendamentos e cadastro de animais.
+Sistema simples para gerenciar agendamentos e cadastro de animais.
 
----
+## Tecnologias
+- Backend: Node.js + Express  
+- Frontend: HTML, CSS, JavaScript  
+- Banco de dados: MySQL  
 
-## 🛠 Tecnologias
+## Como usar
 
-- **Backend:** Node.js, Express.js  
-- **Frontend:** HTML, CSS, JavaScript
-- **Banco de dados:** MySQL (InnoDB)  
+1. Clone o projeto e entre na pasta backend:
 
----
+   ```bash
+   git clone https://github.com/evandrofa/PI.git
+   cd backend
+   ```
 
-## 📂 Estrutura do Projeto
-backend/
-├─ routes/
-│ ├─ agendamentos.js
-│ └─ animals.js
-├─ db.js
-├─ server.js
-└─ frontend/
-├─ index.html
-├─ admin.html
-└─ main.css
+2. Instale as dependências:
 
+   ```bash
+   npm install
+   ```
 
----
+3. Crie o banco de dados e tabelas no MySQL:
 
-## ⚙ Pré-requisitos
+   ```sql
+   CREATE DATABASE vetcare;
+   USE vetcare;
 
-- Node.js >= 18  
-- MySQL  
-- Navegador moderno  
+   CREATE TABLE animals (
+     id INT AUTO_INCREMENT PRIMARY KEY,
+     name VARCHAR(100),
+     species VARCHAR(50),
+     age INT
+   );
 
----
+   CREATE TABLE agendamentos (
+     id INT AUTO_INCREMENT PRIMARY KEY,
+     nome VARCHAR(100),
+     telefone VARCHAR(20),
+     data DATE,
+     hora TIME,
+     observacoes TEXT,
+     animalId INT,
+     FOREIGN KEY (animalId) REFERENCES animals(id) ON DELETE SET NULL
+   );
+   ```
 
-## 🚀 Instalação
+4. Configure o arquivo `db.js` com seu usuário, senha e host do MySQL.
 
-1. Clone o repositório:
+5. Inicie o servidor:
 
-git clone https://github.com/evandrofa/PI.git
+   ```bash
+   cd backend
+   node server.js
+   ```
 
-2. Acesse a pasta do backend:
+6. Abra o navegador nos links:
 
-3.Instale as dependências:
-npm install
+   ```
+   http://localhost:3000/
+   ou
+   http://localhost:3000/index.html
+   ```
 
-4. Crie o banco de dados MySQL e as tabelas:
-CREATE DATABASE IF NOT EXISTS vetcare;
-USE vetcare;
-
-
-CREATE TABLE animals (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  name VARCHAR(100) NOT NULL,
-  species VARCHAR(50) NOT NULL,
-  age INT NOT NULL
-) ENGINE=InnoDB;
-
--- Tabela de agendamentos
-CREATE TABLE agendamentos (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  nome VARCHAR(100) NOT NULL,
-  telefone VARCHAR(20),
-  data DATE NOT NULL,
-  hora TIME NOT NULL,
-  observacoes TEXT,
-  animalId INT,
-  FOREIGN KEY (animalId) REFERENCES animals(id) ON DELETE SET NULL
-) ENGINE=InnoDB;
-
-
-5. Configure o arquivo db.js com seu usuário, senha e host do MySQL.
-
-
-
-▶️ Executando o Projeto
-
-1. Inicie o servidor:
-node server.js
-
-2. Abra o FrontEnd no navegador:
-http://localhost:3000/
-http://localhost:3000/index.html
-
-
-
-✨ Funcionalidades
-
-Cadastro de animais (nome, espécie e idade)
-
-Criação, edição e exclusão de agendamentos
-
-Histórico de agendamentos por animal em modal
-
+## Funcionalidades
+- Cadastro de animais  
+- Criar, editar e excluir agendamentos  
+- Histórico de agendamentos por animal  
