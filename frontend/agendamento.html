@@ -39,7 +39,7 @@
 const form = document.getElementById('agendamentoForm');
 const animalSelect = document.getElementById('animalSelect');
 
-// Carregar animais do backend e preencher o dropdown
+
 async function carregarAnimais() {
   try {
     const res = await fetch('http://localhost:3000/api/animals');
@@ -57,10 +57,9 @@ async function carregarAnimais() {
   }
 }
 
-// Inicializar lista de animais ao carregar a página
 carregarAnimais();
 
-// Enviar agendamento
+
 form.addEventListener('submit', async e => {
   e.preventDefault();
   const data = Object.fromEntries(new FormData(form));
@@ -73,7 +72,7 @@ form.addEventListener('submit', async e => {
     const result = await res.json();
     alert(result.error || result.message);
     form.reset();
-    carregarAnimais(); // atualiza dropdown
+    carregarAnimais(); 
   } catch(err) {
     console.error(err);
     alert('Erro ao criar agendamento');

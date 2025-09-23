@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const db = require('../db');
 
-// Listar todos os animais
+
 router.get('/', (req, res) => {
   db.query('SELECT * FROM animals ORDER BY name', (err, results) => {
     if (err) return res.status(500).json({ error: err.message });
@@ -10,7 +10,6 @@ router.get('/', (req, res) => {
   });
 });
 
-// Cadastrar novo animal
 router.post('/', (req, res) => {
   const { name, species, age } = req.body;
   const query = 'INSERT INTO animals (name, species, age) VALUES (?, ?, ?)';
@@ -20,8 +19,6 @@ router.post('/', (req, res) => {
   });
 });
 
-module.exports = router;
-// Excluir animal
 router.delete('/:id', (req, res) => {
   const { id } = req.params;
   db.query('DELETE FROM animals WHERE id = ?', [id], (err) => {

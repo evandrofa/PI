@@ -10,7 +10,6 @@
 
   <h1>Painel do Veterinário</h1>
 
-  <!-- Tabela de Agendamentos -->
   <div class="container">
     <h2>Agendamentos</h2>
     <table>
@@ -26,12 +25,12 @@
         </tr>
       </thead>
       <tbody id="agendamentos-table-body">
-        <!-- Agendamentos inseridos via JS -->
+        <!-- Agendamentos JS -->
       </tbody>
     </table>
   </div>
 
-  <!-- Tabela de Animais -->
+
   <div class="container">
     <h2>Animais Cadastrados</h2>
     <table>
@@ -45,12 +44,11 @@
         </tr>
       </thead>
       <tbody id="animals-table-body">
-        <!-- Animais inseridos via JS -->
+        <!-- Animais JS -->
       </tbody>
     </table>
   </div>
 
-  <!-- Modal de edição de Agendamento -->
   <div id="modal-editar" class="modal">
     <div class="modal-content">
       <h2>Editar Agendamento</h2>
@@ -69,7 +67,7 @@
         <input type="time" id="editar-hora" required />
         
         <label for="editar-animal">Animal</label>
-        <input type="text" id="editar-animal" required />
+        <select id="editar-animal" required></select>
         
         <label for="editar-observacoes">Observações</label>
         <textarea id="editar-observacoes"></textarea>
@@ -82,168 +80,248 @@
     </div>
   </div>
 
+ 
+  <div id="modal-historico" class="modal">
+    <div class="modal-content">
+      <h2>Histórico de Agendamentos</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Data</th>
+            <th>Hora</th>
+            <th>Cliente</th>
+            <th>Telefone</th>
+            <th>Observações</th>
+          </tr>
+        </thead>
+        <tbody id="historico-body">
+          <!-- Histórico via JS -->
+        </tbody>
+      </table>
+      <div class="modal-buttons">
+        <button type="button" class="cancel" id="btn-fechar-historico">Fechar</button>
+      </div>
+    </div>
+  </div>
+
 <script>
-  const agendamentosApi = 'http://localhost:3000/api/agendamentos';
-  const animalsApi = 'http://localhost:3000/api/animals';
+const agendamentosApi = 'http://localhost:3000/api/agendamentos';
+const animalsApi = 'http://localhost:3000/api/animals';
 
-  const tabelaAgendamentos = document.getElementById('agendamentos-table-body');
-  const tabelaAnimals = document.getElementById('animals-table-body');
+const tabelaAgendamentos = document.getElementById('agendamentos-table-body');
+const tabelaAnimals = document.getElementById('animals-table-body');
 
-  const modalEditar = document.getElementById('modal-editar');
-  const formEditar = document.getElementById('form-editar');
-  const btnCancelarEditar = document.getElementById('btn-cancelar-editar');
+const modalEditar = document.getElementById('modal-editar');
+const formEditar = document.getElementById('form-editar');
+const btnCancelarEditar = document.getElementById('btn-cancelar-editar');
 
-  // Formatar data
-  function formatarDataBrasileira(dataISO) {
-    const data = new Date(dataISO);
-    const dia = String(data.getDate()).padStart(2, '0');
-    const mes = String(data.getMonth() + 1).padStart(2, '0');
-    const ano = data.getFullYear();
-    return `${dia}/${mes}/${ano}`;
+
+const modalHistorico = document.getElementById('modal-historico');
+const historicoBody = document.getElementById('historico-body');
+const btnFecharHistorico = document.getElementById('btn-fechar-historico');
+
+
+function formatarDataBrasileira(dataISO) {
+  const data = new Date(dataISO);
+  const dia = String(data.getDate()).padStart(2, '0');
+  const mes = String(data.getMonth() + 1).padStart(2, '0');
+  const ano = data.getFullYear();
+  return `${dia}/${mes}/${ano}`;
+}
+
+function formatarParaInputDate(dataISO) {
+  const data = new Date(dataISO);
+  const dia = String(data.getDate()).padStart(2, '0');
+  const mes = String(data.getMonth() + 1).padStart(2, '0');
+  const ano = data.getFullYear();
+  return `${ano}-${mes}-${dia}`;
+}
+
+async function carregarAgendamentos() {
+  try {
+    const res = await fetch(agendamentosApi);
+    const agendamentos = await res.json();
+    tabelaAgendamentos.innerHTML = '';
+    agendamentos.forEach(item => {
+      tabelaAgendamentos.innerHTML += `
+        <tr data-id="${item.id}">
+          <td>${item.nome}</td>
+          <td>${item.telefone}</td>
+          <td>${formatarDataBrasileira(item.data)}</td>
+          <td>${item.hora}</td>
+          <td>${item.animal}</td>
+          <td>${item.observacoes || ''}</td>
+          <td>
+            <button class="action-btn" onclick="abrirEditar(${item.id})">Editar</button>
+            <button class="action-btn cancel" onclick="cancelarAgendamento(${item.id})">Cancelar</button>
+          </td>
+        </tr>
+      `;
+    });
+  } catch (error) {
+    alert('Erro ao carregar agendamentos');
+    console.error(error);
   }
+}
 
-  function formatarParaInputDate(dataISO) {
-    const data = new Date(dataISO);
-    const dia = String(data.getDate()).padStart(2, '0');
-    const mes = String(data.getMonth() + 1).padStart(2, '0');
-    const ano = data.getFullYear();
-    return `${ano}-${mes}-${dia}`;
+
+async function carregarAnimals() {
+  try {
+    const res = await fetch(animalsApi);
+    const animals = await res.json();
+    tabelaAnimals.innerHTML = '';
+    animals.forEach(a => {
+      tabelaAnimals.innerHTML += `
+        <tr data-id="${a.id}">
+          <td>${a.id}</td>
+          <td>${a.name}</td>
+          <td>${a.species}</td>
+          <td>${a.age}</td>
+          <td>
+            <button class="action-btn" onclick="abrirHistorico(${a.id})">Histórico</button>
+            <button class="action-btn cancel" onclick="excluirAnimal(${a.id})">Excluir</button>
+          </td>
+        </tr>
+      `;
+    });
+  } catch(err) {
+    console.error('Erro ao carregar animais:', err);
+    alert('Erro ao carregar animais. Verifique o backend.');
   }
+}
 
-  // Carregar Agendamentos
-  async function carregarAgendamentos() {
-    try {
-      const res = await fetch(agendamentosApi);
-      const agendamentos = await res.json();
-      tabelaAgendamentos.innerHTML = '';
-      agendamentos.forEach(item => {
-        tabelaAgendamentos.innerHTML += `
-          <tr data-id="${item.id}">
-            <td>${item.nome}</td>
-            <td>${item.telefone}</td>
-            <td>${formatarDataBrasileira(item.data)}</td>
-            <td>${item.hora}</td>
-            <td>${item.animal}</td>
-            <td>${item.observacoes || ''}</td>
-            <td>
-              <button class="action-btn" onclick="abrirEditar(${item.id})">Editar</button>
-              <button class="action-btn cancel" onclick="cancelarAgendamento(${item.id})">Cancelar</button>
-            </td>
-          </tr>
-        `;
-      });
-    } catch (error) {
-      alert('Erro ao carregar agendamentos');
-      console.error(error);
-    }
+
+async function excluirAnimal(id) {
+  if(!confirm('Deseja realmente excluir este animal?')) return;
+  try {
+    const res = await fetch(`${animalsApi}/${id}`, { method: 'DELETE' });
+    const result = await res.json();
+    alert(result.error || result.message);
+    carregarAnimals();
+  } catch(err) {
+    console.error(err);
+    alert('Erro ao excluir animal');
   }
+}
 
-  // Carregar Animais
-  async function carregarAnimals() {
-    try {
-      const res = await fetch(animalsApi);
-      const animals = await res.json();
-      tabelaAnimals.innerHTML = '';
-      animals.forEach(a => {
-        tabelaAnimals.innerHTML += `
-          <tr data-id="${a.id}">
-            <td>${a.id}</td>
-            <td>${a.name}</td>
-            <td>${a.species}</td>
-            <td>${a.age}</td>
-            <td>
-              <button class="action-btn cancel" onclick="excluirAnimal(${a.id})">Excluir</button>
-            </td>
-          </tr>
-        `;
-      });
-    } catch(err) {
-      console.error('Erro ao carregar animais:', err);
-      alert('Erro ao carregar animais. Verifique o backend.');
-    }
+
+async function abrirEditar(id) {
+  try {
+    const [resAgendamento, resAnimais] = await Promise.all([
+      fetch(`${agendamentosApi}/${id}`),
+      fetch(animalsApi)
+    ]);
+    const agendamento = await resAgendamento.json();
+    const animais = await resAnimais.json();
+
+  
+    const selectAnimal = document.getElementById('editar-animal');
+    selectAnimal.innerHTML = '';
+    animais.forEach(animal => {
+      const opt = document.createElement('option');
+      opt.value = animal.id;
+      opt.textContent = animal.name;
+      if (animal.id === agendamento.animalId) opt.selected = true;
+      selectAnimal.appendChild(opt);
+    });
+
+    document.getElementById('editar-id').value = agendamento.id;
+    document.getElementById('editar-nome').value = agendamento.nome;
+    document.getElementById('editar-telefone').value = agendamento.telefone;
+    document.getElementById('editar-data').value = formatarParaInputDate(agendamento.data);
+    document.getElementById('editar-hora').value = agendamento.hora;
+    document.getElementById('editar-observacoes').value = agendamento.observacoes;
+
+    modalEditar.style.display = 'block';
+  } catch (err) {
+    alert('Erro ao abrir agendamento');
+    console.error(err);
   }
+}
 
-  // Excluir Animal
-  async function excluirAnimal(id) {
-    if(!confirm('Deseja realmente excluir este animal?')) return;
-    try {
-      const res = await fetch(`${animalsApi}/${id}`, { method: 'DELETE' });
-      const result = await res.json();
-      alert(result.error || result.message);
-      carregarAnimals();
-    } catch(err) {
-      console.error(err);
-      alert('Erro ao excluir animal');
-    }
-  }
+btnCancelarEditar.onclick = () => modalEditar.style.display = 'none';
+window.onclick = event => {
+  if(event.target === modalEditar) modalEditar.style.display = 'none';
+  if(event.target === modalHistorico) modalHistorico.style.display = 'none';
+};
 
-  // Modal Editar Agendamento
-  async function abrirEditar(id) {
-    try {
-      const res = await fetch(`${agendamentosApi}/${id}`);
-      const agendamento = await res.json();
-      document.getElementById('editar-id').value = agendamento.id;
-      document.getElementById('editar-nome').value = agendamento.nome;
-      document.getElementById('editar-telefone').value = agendamento.telefone;
-      document.getElementById('editar-data').value = formatarParaInputDate(agendamento.data);
-      document.getElementById('editar-hora').value = agendamento.hora;
-      document.getElementById('editar-animal').value = agendamento.animal;
-      document.getElementById('editar-observacoes').value = agendamento.observacoes;
-      modalEditar.style.display = 'block';
-    } catch(err) {
-      alert('Erro ao abrir agendamento');
-      console.error(err);
-    }
-  }
-
-  btnCancelarEditar.onclick = () => modalEditar.style.display = 'none';
-  window.onclick = event => { if(event.target === modalEditar) modalEditar.style.display = 'none'; };
-
-  formEditar.onsubmit = async e => {
-    e.preventDefault();
-    const id = document.getElementById('editar-id').value;
-    const dados = {
-      nome: document.getElementById('editar-nome').value,
-      telefone: document.getElementById('editar-telefone').value,
-      data: document.getElementById('editar-data').value,
-      hora: document.getElementById('editar-hora').value,
-      animal: document.getElementById('editar-animal').value,
-      observacoes: document.getElementById('editar-observacoes').value
-    };
-    try {
-      const res = await fetch(`${agendamentosApi}/${id}`, {
-        method: 'PUT',
-        headers: {'Content-Type':'application/json'},
-        body: JSON.stringify(dados)
-      });
-      if(res.ok){
-        alert('Agendamento atualizado com sucesso!');
-        modalEditar.style.display = 'none';
-        carregarAgendamentos();
-      } else alert('Erro ao atualizar agendamento');
-    } catch(err){
-      alert('Erro na requisição');
-      console.error(err);
-    }
+formEditar.onsubmit = async e => {
+  e.preventDefault();
+  const id = document.getElementById('editar-id').value;
+  const dados = {
+    nome: document.getElementById('editar-nome').value,
+    telefone: document.getElementById('editar-telefone').value,
+    data: document.getElementById('editar-data').value,
+    hora: document.getElementById('editar-hora').value,
+    animalId: document.getElementById('editar-animal').value,
+    observacoes: document.getElementById('editar-observacoes').value
   };
-
-  async function cancelarAgendamento(id) {
-    if(!confirm('Tem certeza que deseja cancelar este agendamento?')) return;
-    try {
-      const res = await fetch(`${agendamentosApi}/${id}`, { method: 'DELETE' });
-      if(res.ok){
-        alert('Agendamento cancelado!');
-        carregarAgendamentos();
-      } else alert('Erro ao cancelar agendamento');
-    } catch(err){
-      alert('Erro na requisição');
-      console.error(err);
-    }
+  try {
+    const res = await fetch(`${agendamentosApi}/${id}`, {
+      method: 'PUT',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(dados)
+    });
+    if(res.ok){
+      alert('Agendamento atualizado com sucesso!');
+      modalEditar.style.display = 'none';
+      carregarAgendamentos();
+    } else alert('Erro ao atualizar agendamento');
+  } catch(err){
+    alert('Erro na requisição');
+    console.error(err);
   }
+};
 
-  // Carregar tudo ao abrir
-  carregarAgendamentos();
-  carregarAnimals();
+
+async function cancelarAgendamento(id) {
+  if(!confirm('Tem certeza que deseja cancelar este agendamento?')) return;
+  try {
+    const res = await fetch(`${agendamentosApi}/${id}`, { method: 'DELETE' });
+    if(res.ok){
+      alert('Agendamento cancelado!');
+      carregarAgendamentos();
+    } else alert('Erro ao cancelar agendamento');
+  } catch(err){
+    alert('Erro na requisição');
+    console.error(err);
+  }
+}
+
+async function abrirHistorico(animalId) {
+  try {
+    const res = await fetch(`${agendamentosApi}/animal/${animalId}`);
+    const historico = await res.json();
+
+    historicoBody.innerHTML = '';
+    if (historico.length === 0) {
+      historicoBody.innerHTML = `<tr><td colspan="5">Nenhum agendamento encontrado</td></tr>`;
+    } else {
+      historico.forEach(h => {
+        historicoBody.innerHTML += `
+          <tr>
+            <td>${formatarDataBrasileira(h.data)}</td>
+            <td>${h.hora}</td>
+            <td>${h.nome}</td>
+            <td>${h.telefone}</td>
+            <td>${h.observacoes || ''}</td>
+          </tr>
+        `;
+      });
+    }
+
+    modalHistorico.style.display = 'block';
+  } catch (err) {
+    console.error(err);
+    alert('Erro ao carregar histórico');
+  }
+}
+
+btnFecharHistorico.onclick = () => modalHistorico.style.display = 'none';
+
+
+carregarAgendamentos();
+carregarAnimals();
 </script>
 </body>
 </html>
