@@ -164,7 +164,7 @@ button:hover {
     background-color: #276e47;
 }
 
-/* Tabela do Painel (admin.html) */
+
 table {
     width: 95%;
     max-width: 1000px;
@@ -310,7 +310,7 @@ button:hover {
     padding: 6px 12px;
     border-radius: 5px;
     cursor: pointer;
-    margin: 0 3px;
+    margin: 3px 3px;
     font-size: 0.9rem;
   }
 
@@ -336,14 +336,27 @@ button:hover {
   }
 
   .modal-content {
-    background-color: #fff;
-    margin: 10% auto; 
+    background: #fff;
+    margin: 50px auto;
     padding: 20px;
     border-radius: 8px;
-    width: 90%;
-    max-width: 500px;
+    max-width: 800px;
+    max-height: 80vh;
+    overflow-y: auto;
   }
-
+  .modal-content table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .modal-content th {
+  background: #2e8b57;
+  position: sticky;
+  top: 0;
+}
+  .modal-content th, .modal-content td {
+  padding: 8px;
+  border: 1px solid #ccc;
+}
   .modal-content h2 {
     margin-top: 0;
     color: #2e8b57;
@@ -387,6 +400,7 @@ button:hover {
     background-color: #2e8b57;
     color: white;
     margin-right: 8px;
+    margin-bottom: 3px;
   }
 
   .modal-buttons button.cancel {
@@ -394,7 +408,7 @@ button:hover {
     color: white;
   }
 
-/* Formulário de cadastro de animais */
+
 .form-container {
     max-width: 500px;
     margin: 3rem auto;
